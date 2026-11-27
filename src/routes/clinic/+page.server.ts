@@ -39,9 +39,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 				.where(eq(users.role, 'parent'))
 		]);
 
+		const confirmedWithParent = confirmedAppts.map((a) => ({
+			...a,
+			matchedParentId: parentUsers.find((p) => p.phoneWa === a.parentWa)?.id ?? ''
+		}));
+
 		return {
 			user: locals.user,
-			confirmedAppointments: confirmedAppts,
+			confirmedAppointments: confirmedWithParent,
 			plans,
 			parentUsers
 		};
@@ -55,7 +60,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 					parentWa: '6282257802227',
 					childAgeLabel: '2 Tahun 10 Bulan',
 					mainComplaint: 'Tantrum & Fokus Perilaku (ABA)',
-					scheduledAt: new Date()
+					scheduledAt: new Date(),
+					matchedParentId: ''
 				}
 			],
 			plans: [
@@ -75,6 +81,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	createPlan: async ({ request, locals }) => {
 		const formData = await request.formData();
+		const appointmentId = String(formData.get('appointmentId') ?? '').trim() || null;
 		const parentId = String(formData.get('parentId') ?? '').trim() || null;
 		const childNickname = String(formData.get('childNickname') ?? '').trim();
 		const title = String(formData.get('title') ?? '').trim();
@@ -141,6 +148,13 @@ export const actions: Actions = {
 					isAchieved: false,
 					createdAt: now
 				});
+			}
+
+			if (appointmentId) {
+				await db
+					.update(appointments)
+					.set({ status: 'completed', childId })
+					.where(eq(appointments.id, appointmentId));
 			}
 		} catch (err) {
 			console.warn('[Clinic] DB offline saat membuat Therapy Plan:', err);

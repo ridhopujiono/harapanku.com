@@ -31,6 +31,8 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
+      APP_ENV: ${APP_ENV:-production}
+      LAUNCH_AT: ${LAUNCH_AT:-2026-11-30T00:00:00+08:00}
       PORT: 3000
       DATABASE_URL: mysql://${MYSQL_USER:-harapanku_app}:${MYSQL_PASSWORD:-harapanku_app_secret}@db:3306/${MYSQL_DATABASE:-harapanku}
       SESSION_SECRET: ${SESSION_SECRET:-change_this_to_a_long_random_secret_string}
