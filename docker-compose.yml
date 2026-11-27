@@ -1,0 +1,59 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: harapanku-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-harapanku_root_secret}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-harapanku}
+      MYSQL_USER: ${MYSQL_USER:-harapanku_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-harapanku_app_secret}
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.mysql.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/seed.mysql.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: harapanku-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: mysql://${MYSQL_USER:-harapanku_app}:${MYSQL_PASSWORD:-harapanku_app_secret}@db:3306/${MYSQL_DATABASE:-harapanku}
+      SESSION_SECRET: ${SESSION_SECRET:-change_this_to_a_long_random_secret_string}
+      CLINIC_WA_NUMBER: ${CLINIC_WA_NUMBER:-628115400992}
+      ORIGIN: ${ORIGIN:-https://harapanku.id}
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: harapanku-caddy
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  mysql_data:
+  caddy_data:
+  caddy_config:

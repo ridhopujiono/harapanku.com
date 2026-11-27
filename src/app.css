@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+	--color-brand-blue: #357abd;
+	--color-brand-blue-dark: #2563eb;
+	--color-brand-blue-light: #ebf4fc;
+	--color-brand-blue-soft: #4a90e2;
+	--color-brand-sage: #5e8d5e;
+	--color-brand-sage-light: #eaf4ec;
+	--color-brand-sage-dark: #3b683d;
+	--color-brand-orange: #f5a623;
+	--color-brand-orange-hover: #e09015;
+	--color-brand-orange-dark: #d97706;
+
+	--font-heading: 'Poppins', 'Nunito', sans-serif;
+	--font-subheading: 'Nunito', 'Plus Jakarta Sans', sans-serif;
+	--font-body: 'Inter', 'Plus Jakarta Sans', sans-serif;
+
+	--shadow-clinical: 0 4px 20px -2px rgba(30, 41, 59, 0.05);
+	--shadow-clinical-hover: 0 12px 32px -4px rgba(30, 41, 59, 0.09);
+}
+
+.blob-animate {
+	animation: morph 9s ease-in-out infinite;
+}
+
+@keyframes morph {
+	0%,
+	100% {
+		border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+	}
+	50% {
+		border-radius: 35% 65% 65% 35% / 45% 55% 45% 55%;
+	}
+}
+
+.icon-fill {
+	font-variation-settings: 'FILL' 1;
+}
