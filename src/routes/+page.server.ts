@@ -5,11 +5,13 @@ import { db } from '$lib/server/db';
 import { appointments, assessmentPackages, services } from '$lib/server/schema';
 import { DEFAULT_PACKAGES, DEFAULT_SERVICES } from '$lib/data/defaults';
 import { normalizeWa } from '$lib/server/auth';
+import { loadLandingCms } from '$lib/server/cms';
 import { saveDevAppointment } from '$lib/server/dev-store';
 import { env } from '$env/dynamic/private';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
+	const cms = await loadLandingCms();
 	try {
 		const [dbServices, dbPackages] = await Promise.all([
 			db.select().from(services).where(eq(services.isActive, true)),
@@ -45,9 +47,9 @@ export const load: PageServerLoad = async () => {
 					}))
 				: DEFAULT_PACKAGES;
 
-		return { services: mappedServices, packages: mappedPackages };
+		return { cms, services: mappedServices, packages: mappedPackages };
 	} catch {
-		return { services: DEFAULT_SERVICES, packages: DEFAULT_PACKAGES };
+		return { cms, services: DEFAULT_SERVICES, packages: DEFAULT_PACKAGES };
 	}
 };
 

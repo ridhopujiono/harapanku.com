@@ -38,8 +38,12 @@ services:
       SESSION_SECRET: ${SESSION_SECRET:-change_this_to_a_long_random_secret_string}
       CLINIC_WA_NUMBER: ${CLINIC_WA_NUMBER:-628115400992}
       ORIGIN: ${ORIGIN:-https://harapanku.id}
+      UPLOAD_DIR: /app/uploads
     ports:
       - "127.0.0.1:3000:3000"
+    volumes:
+      - uploads_data:/app/uploads
 
 volumes:
   mysql_data:
+  uploads_data:

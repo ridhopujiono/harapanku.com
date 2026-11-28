@@ -6,6 +6,7 @@
 		icon: string;
 		href?: string;
 		active?: boolean;
+		dividerLabel?: string;
 		onclick?: () => void;
 	}
 
@@ -73,6 +74,15 @@
 			<!-- Navigation Links -->
 			<nav class="space-y-1.5 p-3">
 				{#each navItems as item}
+					{#if item.dividerLabel}
+						<div class="mt-3 border-t border-blue-100 pt-3">
+							{#if !collapsed}
+								<p class="px-3 pb-1 text-[10px] font-extrabold tracking-wider text-blue-500 uppercase">
+									{item.dividerLabel}
+								</p>
+							{/if}
+						</div>
+					{/if}
 					{#if item.href}
 						<a
 							href={item.href}
@@ -155,6 +165,13 @@
 					</div>
 					<nav class="mt-4 space-y-1.5">
 						{#each navItems as item}
+							{#if item.dividerLabel}
+								<div class="mt-3 border-t border-blue-100 pt-3">
+									<p class="px-3 pb-1 text-[10px] font-extrabold tracking-wider text-blue-500 uppercase">
+										{item.dividerLabel}
+									</p>
+								</div>
+							{/if}
 							{#if item.href}
 								<a
 									href={item.href}

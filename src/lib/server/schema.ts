@@ -201,3 +201,9 @@ export const monthlyTargets = mysqlTable('monthly_targets', {
 	achievedAt: datetime('achieved_at'),
 	createdAt: datetime('created_at').notNull()
 });
+
+export const cmsSections = mysqlTable('cms_sections', {
+	sectionKey: varchar('section_key', { length: 50 }).primaryKey(),
+	content: json('content').notNull(),
+	updatedAt: datetime('updated_at').notNull()
+});

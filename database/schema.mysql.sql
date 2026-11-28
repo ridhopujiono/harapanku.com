@@ -232,4 +232,14 @@ CREATE TABLE IF NOT EXISTS monthly_targets (
 
 CREATE INDEX idx_targets_plan_month ON monthly_targets(plan_id, period_month);
 
+-- ==========================================
+-- DOMAIN 5: CMS LANDING PAGE
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS cms_sections (
+    section_key VARCHAR(50) NOT NULL PRIMARY KEY,
+    content JSON NOT NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

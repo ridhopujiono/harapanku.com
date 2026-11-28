@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import DashboardShell, { type NavItem } from '$lib/components/DashboardShell.svelte';
+	import DashboardShell from '$lib/components/DashboardShell.svelte';
+	import { getAdminNavItems } from '$lib/components/admin-nav';
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -17,32 +18,7 @@
 	let pendingCount = $derived(data.appointments.filter((a) => a.status === 'pending_wa').length);
 	let confirmedCount = $derived(data.appointments.filter((a) => a.status === 'confirmed').length);
 
-	let navItems = $derived<NavItem[]>([
-		{
-			label: 'Semua Reservasi',
-			icon: 'inbox',
-			active: filterStatus === 'all',
-			onclick: () => (filterStatus = 'all')
-		},
-		{
-			label: 'Menunggu Konfirmasi',
-			icon: 'pending_actions',
-			active: filterStatus === 'pending_wa',
-			onclick: () => (filterStatus = 'pending_wa')
-		},
-		{
-			label: 'Terkonfirmasi',
-			icon: 'event_available',
-			active: filterStatus === 'confirmed',
-			onclick: () => (filterStatus = 'confirmed')
-		},
-		{
-			label: 'Selesai Asesmen',
-			icon: 'task_alt',
-			active: filterStatus === 'completed',
-			onclick: () => (filterStatus = 'completed')
-		}
-	]);
+	const navItems = getAdminNavItems('/admin');
 </script>
 
 <svelte:head>
