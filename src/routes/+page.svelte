@@ -11,7 +11,14 @@
 	let selectedServiceId = $state<number | null>(null);
 	let selectedPackageId = $state<number | null>(null);
 	let isSubmitting = $state(false);
+	let articleScroller = $state<HTMLDivElement | null>(null);
 	let teamScroller = $state<HTMLDivElement | null>(null);
+
+	function scrollArticles(dir: 'prev' | 'next') {
+		if (!articleScroller) return;
+		const distance = dir === 'next' ? 380 : -380;
+		articleScroller.scrollBy({ left: distance, behavior: 'smooth' });
+	}
 
 	function scrollTeams(dir: 'prev' | 'next') {
 		if (!teamScroller) return;
@@ -107,6 +114,7 @@
 		</a>
 
 		<nav class="hidden items-center gap-7 font-subheading text-sm font-semibold text-slate-600 lg:flex">
+			<a href="#articles" class="py-2 transition-colors hover:text-brand-blue">Articles</a>
 			<a href="#tim-kami" class="py-2 transition-colors hover:text-brand-blue">Our Teams</a>
 			<a href="#layanan" class="py-2 transition-colors hover:text-brand-blue">Layanan Terapi</a>
 			<a href="#alur" class="py-2 transition-colors hover:text-brand-blue">Alur Konsultasi</a>
@@ -178,6 +186,7 @@
 					</button>
 				</div>
 				<nav class="mt-6 flex flex-col gap-4 font-subheading font-semibold text-slate-700">
+					<a href="#articles" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Articles</a>
 					<a href="#tim-kami" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Our Teams</a>
 					<a href="#layanan" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Layanan Terapi</a>
 					<a href="#alur" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Alur Konsultasi</a>
@@ -322,6 +331,80 @@
 			</div>
 		</div>
 	</section>
+
+	<!-- ========================================================================= -->
+	<!-- 2B. ARTICLES (HORIZONTAL SCROLL, NEWEST FIRST)                            -->
+	<!-- ========================================================================= -->
+	{#if data.articles.length > 0}
+		<section class="w-full border-t border-slate-100 bg-[#F8FBFF] py-16 sm:py-20" id="articles">
+			<div class="mx-auto max-w-[1240px] px-5 sm:px-8">
+				<div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+					<div class="max-w-2xl">
+						<span class="mb-3 inline-block rounded-full bg-brand-blue-light px-3.5 py-1 font-subheading text-xs font-extrabold tracking-wider text-brand-blue uppercase">
+							{data.cms.articles_header.badge}
+						</span>
+						<h2 class="mb-2 font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+							{data.cms.articles_header.title}
+						</h2>
+						<p class="font-body text-sm leading-relaxed text-slate-600 sm:text-base">
+							{data.cms.articles_header.subtitle}
+						</p>
+					</div>
+
+					<div class="flex items-center gap-2 self-start md:self-auto">
+						<button
+							type="button"
+							onclick={() => scrollArticles('prev')}
+							aria-label="Geser artikel ke kiri"
+							class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-brand-blue hover:text-brand-blue"
+						>
+							<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+						</button>
+						<button
+							type="button"
+							onclick={() => scrollArticles('next')}
+							aria-label="Geser artikel ke kanan"
+							class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-brand-blue hover:text-brand-blue"
+						>
+							<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+						</button>
+					</div>
+				</div>
+
+				<div
+					bind:this={articleScroller}
+					class="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-4"
+				>
+					{#each data.articles as article (article.slug)}
+						<a
+							href={`/articles/${article.slug}`}
+							class="group flex w-[84%] flex-none snap-start flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-clinical transition-all hover:-translate-y-1 hover:border-blue-200 hover:shadow-clinical-hover sm:w-[340px] lg:w-[368px]"
+						>
+							<div class="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+								<img
+									src={article.imageUrl}
+									alt={article.title}
+									class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+								/>
+							</div>
+							<div class="flex flex-grow flex-col p-6">
+								<h3 class="mb-2.5 line-clamp-2 font-heading text-lg font-bold leading-snug text-slate-900 transition-colors group-hover:text-brand-blue">
+									{article.title}
+								</h3>
+								<p class="mb-5 line-clamp-3 font-body text-sm leading-relaxed text-slate-600">
+									{article.abstract}
+								</p>
+								<div class="mt-auto inline-flex items-center gap-1.5 border-t border-slate-100 pt-4 font-subheading text-xs font-extrabold tracking-wide text-brand-blue">
+									<span>Read More</span>
+									<span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+								</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		</section>
+	{/if}
 
 	<!-- ========================================================================= -->
 	<!-- 3. CLINICAL ADVANTAGES / KEUNGGULAN                                       -->

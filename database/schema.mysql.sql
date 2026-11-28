@@ -246,4 +246,26 @@ CREATE TABLE IF NOT EXISTS cms_sections (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ==========================================
+-- DOMAIN 6: ARTICLES / EDUKASI
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS articles (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(180) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    abstract TEXT NOT NULL,
+    content LONGTEXT NOT NULL,
+    image_url VARCHAR(500) NOT NULL,
+    author_name VARCHAR(150) NOT NULL,
+    tags JSON NOT NULL,
+    view_count INT UNSIGNED NOT NULL DEFAULT 0,
+    is_published BOOLEAN NOT NULL DEFAULT TRUE,
+    published_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_articles_slug (slug),
+    KEY idx_articles_pub (is_published, published_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

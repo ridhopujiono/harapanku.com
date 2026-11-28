@@ -211,3 +211,19 @@ export const cmsSections = mysqlTable('cms_sections', {
 	content: json('content').notNull(),
 	updatedAt: datetime('updated_at').notNull()
 });
+
+export const articles = mysqlTable('articles', {
+	id: int('id', { unsigned: true }).autoincrement().primaryKey(),
+	slug: varchar('slug', { length: 180 }).notNull().unique(),
+	title: varchar('title', { length: 255 }).notNull(),
+	abstract: text('abstract').notNull(),
+	content: text('content').notNull(),
+	imageUrl: varchar('image_url', { length: 500 }).notNull(),
+	authorName: varchar('author_name', { length: 150 }).notNull(),
+	tags: json('tags').$type<string[]>().notNull(),
+	viewCount: int('view_count', { unsigned: true }).notNull().default(0),
+	isPublished: boolean('is_published').notNull().default(true),
+	publishedAt: datetime('published_at').notNull(),
+	createdAt: datetime('created_at').notNull(),
+	updatedAt: datetime('updated_at').notNull()
+});

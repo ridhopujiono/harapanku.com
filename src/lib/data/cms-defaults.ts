@@ -117,6 +117,7 @@ export interface FooterCms {
 
 export interface LandingCmsData {
 	hero: HeroCms;
+	articles_header: SectionHeaderCms;
 	advantages: AdvantagesCms;
 	services_header: SectionHeaderCms;
 	flow: FlowCms;
@@ -145,6 +146,12 @@ export const DEFAULT_CMS: LandingCmsData = {
 			'Parent Dashboard Real-Time',
 			'Pendekatan Penuh Kasih'
 		]
+	},
+	articles_header: {
+		badge: 'EDUKASI & ARTIKEL',
+		title: 'Artikel & Panduan Tumbuh Kembang Anak',
+		subtitle:
+			'Wawasan klinis dan tips praktis dari tim dokter serta terapis Harapanku untuk mendampingi langkah kecil buah hati di rumah.'
 	},
 	advantages: {
 		badge: 'KEUNGGULAN HARAPANKU',

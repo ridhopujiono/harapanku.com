@@ -32,6 +32,12 @@ export function getAdminNavItems(currentPath: string): NavItem[] {
 			icon: 'payments',
 			href: '/admin/cms/packages',
 			active: currentPath === '/admin/cms/packages'
+		},
+		{
+			label: 'Articles',
+			icon: 'article',
+			href: '/admin/cms/articles',
+			active: currentPath === '/admin/cms/articles'
 		}
 	];
 }

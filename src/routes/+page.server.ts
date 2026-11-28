@@ -1,8 +1,9 @@
 import { fail } from '@sveltejs/kit';
 import crypto from 'node:crypto';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { appointments, assessmentPackages, services } from '$lib/server/schema';
+import { appointments, articles, assessmentPackages, services } from '$lib/server/schema';
+import { DEFAULT_ARTICLES, type ArticleItem } from '$lib/data/articles-defaults';
 import { DEFAULT_PACKAGES, DEFAULT_SERVICES } from '$lib/data/defaults';
 import { normalizeWa } from '$lib/server/auth';
 import { loadLandingCms } from '$lib/server/cms';
@@ -13,9 +14,14 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async () => {
 	const cms = await loadLandingCms();
 	try {
-		const [dbServices, dbPackages] = await Promise.all([
+		const [dbServices, dbPackages, dbArticles] = await Promise.all([
 			db.select().from(services).where(eq(services.isActive, true)),
-			db.select().from(assessmentPackages).where(eq(assessmentPackages.isActive, true))
+			db.select().from(assessmentPackages).where(eq(assessmentPackages.isActive, true)),
+			db
+				.select()
+				.from(articles)
+				.where(eq(articles.isPublished, true))
+				.orderBy(desc(articles.publishedAt), desc(articles.id))
 		]);
 
 		const mappedServices =
@@ -47,9 +53,39 @@ export const load: PageServerLoad = async () => {
 					}))
 				: DEFAULT_PACKAGES;
 
-		return { cms, services: mappedServices, packages: mappedPackages };
+		const mappedArticles: ArticleItem[] =
+			dbArticles.length > 0
+				? dbArticles.map((a) => ({
+						id: a.id,
+						slug: a.slug,
+						title: a.title,
+						abstract: a.abstract,
+						content: a.content,
+						imageUrl: a.imageUrl,
+						authorName: a.authorName,
+						tags: Array.isArray(a.tags) ? (a.tags as string[]) : [],
+						viewCount: a.viewCount,
+						isPublished: a.isPublished,
+						publishedAt:
+							a.publishedAt instanceof Date
+								? a.publishedAt.toISOString()
+								: String(a.publishedAt)
+					}))
+				: DEFAULT_ARTICLES;
+
+		return {
+			cms,
+			services: mappedServices,
+			packages: mappedPackages,
+			articles: mappedArticles
+		};
 	} catch {
-		return { cms, services: DEFAULT_SERVICES, packages: DEFAULT_PACKAGES };
+		return {
+			cms,
+			services: DEFAULT_SERVICES,
+			packages: DEFAULT_PACKAGES,
+			articles: DEFAULT_ARTICLES
+		};
 	}
 };
 
