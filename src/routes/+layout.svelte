@@ -77,7 +77,7 @@
 					Butuh konsultasi atau informasi jadwal klinik di Balikpapan?
 				</p>
 				<a
-					href="https://wa.me/628115400992?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20tanya%20informasi%20layanan"
+					href="https://wa.me/6285248282929?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20tanya%20informasi%20layanan"
 					target="_blank"
 					rel="noopener"
 					class="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#145334] px-6 py-3 font-subheading text-sm font-bold text-white shadow-sm transition hover:bg-[#0F3F27]"

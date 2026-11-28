@@ -36,7 +36,7 @@ services:
       PORT: 3000
       DATABASE_URL: mysql://${MYSQL_USER:-harapanku_app}:${MYSQL_PASSWORD:-harapanku_app_secret}@db:3306/${MYSQL_DATABASE:-harapanku}
       SESSION_SECRET: ${SESSION_SECRET:-change_this_to_a_long_random_secret_string}
-      CLINIC_WA_NUMBER: ${CLINIC_WA_NUMBER:-628115400992}
+      CLINIC_WA_NUMBER: ${CLINIC_WA_NUMBER:-6285248282929}
       ORIGIN: ${ORIGIN:-https://harapanku.id}
       UPLOAD_DIR: /app/uploads
     ports:

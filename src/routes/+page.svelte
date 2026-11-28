@@ -134,7 +134,7 @@
 
 		<div class="flex items-center gap-3">
 			<a
-				href="https://wa.me/628115400992"
+				href="https://wa.me/6285248282929"
 				target="_blank"
 				rel="noopener"
 				class="hidden h-10 w-10 items-center justify-center rounded-full bg-brand-sage-light text-brand-sage shadow-sm transition-all hover:bg-brand-sage hover:text-white sm:inline-flex"
@@ -214,7 +214,7 @@
 					<span>Daftar Asesmen Awal</span>
 				</button>
 				<a
-					href="https://wa.me/628115400992"
+					href="https://wa.me/6285248282929"
 					target="_blank"
 					rel="noopener"
 					class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-sage-light py-3 font-subheading text-sm font-bold text-brand-sage-dark"
@@ -262,7 +262,7 @@
 							<span>{data.cms.hero.ctaPrimary}</span>
 						</button>
 						<a
-							href="https://wa.me/628115400992?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20tanya%20mengenai%20layanan%20terapi%20tumbuh%20kembang%20anak"
+							href="https://wa.me/6285248282929?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20tanya%20mengenai%20layanan%20terapi%20tumbuh%20kembang%20anak"
 							target="_blank"
 							rel="noopener"
 							class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 font-subheading text-base font-bold text-brand-blue shadow-xs transition-all hover:border-brand-blue/30 hover:bg-slate-50"
@@ -1105,7 +1105,7 @@
 					</div>
 				</div>
 				<a
-					href="https://wa.me/628115400992?text=Halo%20Care%20Coordinator%20Klinik%20Harapanku%2C%20saya%20ingin%20konsultasi%20singkat%20mengenai%20anak%20saya"
+					href="https://wa.me/6285248282929?text=Halo%20Care%20Coordinator%20Klinik%20Harapanku%2C%20saya%20ingin%20konsultasi%20singkat%20mengenai%20anak%20saya"
 					target="_blank"
 					rel="noopener"
 					class="rounded-xl bg-brand-blue px-5 py-2.5 font-subheading text-xs font-bold whitespace-nowrap text-white transition-all hover:bg-brand-blue-dark"
@@ -1143,7 +1143,7 @@
 							<span>Daftar Asesmen Awal Sekarang</span>
 						</button>
 						<a
-							href="https://wa.me/628115400992?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20konsultasi%20awal%20melalui%20WhatsApp"
+							href="https://wa.me/6285248282929?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20konsultasi%20awal%20melalui%20WhatsApp"
 							target="_blank"
 							rel="noopener"
 							class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 font-subheading text-base font-bold text-brand-sage-dark shadow-xs transition-colors hover:bg-slate-50 sm:w-auto"
@@ -1176,7 +1176,7 @@
 				</p>
 				<div class="pt-1">
 					<a
-						href="https://wa.me/628115400992"
+						href="https://wa.me/6285248282929"
 						target="_blank"
 						rel="noopener"
 						class="inline-flex items-center gap-2 rounded-xl border border-brand-sage/20 bg-brand-sage-light/70 px-4 py-2 font-subheading text-xs font-bold text-brand-sage-dark transition-colors hover:bg-brand-sage-light"
@@ -1236,7 +1236,7 @@
 
 <!-- Floating WhatsApp Button -->
 <a
-	href="https://wa.me/628115400992?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20tanya%20jadwal%20asesmen"
+	href="https://wa.me/6285248282929?text=Halo%20Klinik%20Harapanku%2C%20saya%20ingin%20tanya%20jadwal%20asesmen"
 	target="_blank"
 	rel="noopener"
 	class="fixed right-6 bottom-6 z-40 flex items-center gap-2.5 rounded-full bg-[#25D366] px-4 py-3 font-subheading text-sm font-bold text-white shadow-[0_8px_24px_rgba(37,211,102,0.4)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#20ba59] hover:shadow-[0_12px_28px_rgba(37,211,102,0.5)]"

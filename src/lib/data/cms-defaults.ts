@@ -325,7 +325,7 @@ export const DEFAULT_CMS: LandingCmsData = {
 	footer: {
 		description:
 			'Pusat layanan terapi dan stimulasi tumbuh kembang anak terpadu di Balikpapan. Pendekatan ramah anak, transparan, dan berbasis bukti klinis.',
-		whatsappDisplay: '+62 811-5400-992',
+		whatsappDisplay: '+62 852-4828-2929',
 		address: 'Jl. MT Haryono No. 88, Balikpapan Selatan, Kalimantan Timur 76114',
 		phone: '(0542) 876-209',
 		hoursWeekday: '08:00 – 17:00 WITA',

@@ -136,7 +136,7 @@ export const actions: Actions = {
 			}
 		}
 
-		const clinicWa = env.CLINIC_WA_NUMBER ?? '628115400992';
+		const clinicWa = env.CLINIC_WA_NUMBER ?? '6285248282929';
 		const message = [
 			`Halo Care Coordinator Harapanku, saya ingin menjadwalkan Asesmen/Konsultasi:`,
 			`- Nama Orang Tua: ${parentName}`,
