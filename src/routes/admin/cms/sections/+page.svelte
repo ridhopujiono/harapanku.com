@@ -7,17 +7,21 @@
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	const navItems = getAdminNavItems('/admin/cms/sections');
 
-	let activeTab = $state<'advantages' | 'flow' | 'transparency' | 'facilities' | 'faq'>('advantages');
+	let activeTab = $state<'advantages' | 'flow' | 'transparency' | 'facilities' | 'teams' | 'faq'>(
+		'advantages'
+	);
 
 	let advItems = $state<typeof data.advantages.items>([]);
 	let flowSteps = $state<typeof data.flow.steps>([]);
 	let facItems = $state<typeof data.facilities.items>([]);
+	let teamMembers = $state<typeof data.teams.members>([]);
 	let faqItems = $state<typeof data.faq.items>([]);
 
 	$effect(() => {
 		advItems = structuredClone(data.advantages.items);
 		flowSteps = structuredClone(data.flow.steps);
 		facItems = structuredClone(data.facilities.items);
+		teamMembers = structuredClone(data.teams.members);
 		faqItems = structuredClone(data.faq.items);
 	});
 </script>
@@ -40,6 +44,7 @@
 			{ id: 'flow', label: '6. Alur Terapi Kami' },
 			{ id: 'transparency', label: '7. Teknologi Transparansi' },
 			{ id: 'facilities', label: '8. Fasilitas Klinik' },
+			{ id: 'teams', label: 'Our Teams' },
 			{ id: 'faq', label: '11. Bantuan & FAQ' }
 		] as t}
 			<button
@@ -243,6 +248,80 @@
 				<button type="submit" class="cursor-pointer rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-blue-700">
 					Simpan Fasilitas Klinik
 				</button>
+			</form>
+		</section>
+	{:else if activeTab === 'teams'}
+		<section class="rounded-2xl border border-blue-100 bg-white p-6 shadow-xs">
+			<h2 class="font-heading text-base font-bold text-slate-900">Section Our Teams</h2>
+			<form method="POST" action="?/saveTeams" enctype="multipart/form-data" use:enhance class="mt-4 space-y-4">
+				<input type="hidden" name="membersJson" value={JSON.stringify(teamMembers)} />
+				<div class="grid gap-3 sm:grid-cols-2">
+					<div>
+						<label for="tm-badge" class="mb-1 block text-xs font-bold text-slate-700">Badge</label>
+						<input id="tm-badge" name="badge" value={data.teams.badge} class="w-full rounded-xl border border-blue-200 px-3 py-2 text-sm" />
+					</div>
+					<div>
+						<label for="tm-title" class="mb-1 block text-xs font-bold text-slate-700">Judul Section</label>
+						<input id="tm-title" name="title" value={data.teams.title} class="w-full rounded-xl border border-blue-200 px-3 py-2 text-sm" />
+					</div>
+				</div>
+				<div>
+					<label for="tm-sub" class="mb-1 block text-xs font-bold text-slate-700">Subjudul</label>
+					<textarea id="tm-sub" name="subtitle" rows="2" class="w-full rounded-xl border border-blue-200 px-3 py-2 text-sm">{data.teams.subtitle}</textarea>
+				</div>
+
+				<div class="space-y-4">
+					{#each teamMembers as member, i}
+						<div class="rounded-xl border border-blue-100 bg-[#F8FBFF] p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<span class="text-xs font-bold text-blue-700">Anggota Tim #{i + 1}</span>
+								{#if teamMembers.length > 1}
+									<button
+										type="button"
+										onclick={() => (teamMembers = teamMembers.filter((_, idx) => idx !== i))}
+										class="text-xs font-semibold text-blue-700 hover:underline"
+									>
+										Hapus
+									</button>
+								{/if}
+							</div>
+							<div class="grid gap-3 sm:grid-cols-2">
+								<input bind:value={member.name} placeholder="Nama Lengkap & Gelar" class="rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-xs font-semibold" />
+								<input bind:value={member.role} placeholder="Jabatan" class="rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-xs" />
+							</div>
+							<textarea bind:value={member.summary} rows="2" placeholder="Ringkasan profil / spesialisasi..." class="mt-2 w-full rounded-lg border border-blue-200 bg-white px-3 py-1.5 text-xs"></textarea>
+							<div class="mt-3 flex flex-wrap items-center gap-4">
+								<img src={member.photoUrl} alt={member.name} class="h-16 w-20 rounded-lg border border-blue-100 object-cover" />
+								<div class="flex-1 space-y-1">
+									<input bind:value={member.photoUrl} placeholder="URL Foto" class="w-full rounded-lg border border-blue-200 bg-white px-3 py-1 text-xs" />
+									<input name="teamFile_{i}" type="file" accept="image/png,image/jpeg,image/webp" class="text-xs text-slate-600" />
+								</div>
+							</div>
+						</div>
+					{/each}
+				</div>
+
+				<div class="flex flex-wrap gap-3">
+					<button
+						type="button"
+						onclick={() =>
+							(teamMembers = [
+								...teamMembers,
+								{
+									name: 'Nama Terapis / Psikolog',
+									role: 'Jabatan Spesialis',
+									summary: 'Ringkasan pengalaman dan fokus penanganan anak.',
+									photoUrl: '/assets/images/team-1.svg'
+								}
+							])}
+						class="cursor-pointer rounded-xl border border-blue-200 bg-white px-4 py-2 text-xs font-bold text-blue-700 hover:bg-blue-50"
+					>
+						+ Tambah Anggota Tim
+					</button>
+					<button type="submit" class="cursor-pointer rounded-xl bg-blue-600 px-6 py-2 text-xs font-bold text-white hover:bg-blue-700">
+						Simpan Our Teams
+					</button>
+				</div>
 			</form>
 		</section>
 	{:else if activeTab === 'faq'}

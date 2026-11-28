@@ -67,6 +67,20 @@ export interface FacilitiesCms {
 	items: FacilityItem[];
 }
 
+export interface TeamMember {
+	name: string;
+	role: string;
+	summary: string;
+	photoUrl: string;
+}
+
+export interface TeamsCms {
+	badge: string;
+	title: string;
+	subtitle: string;
+	members: TeamMember[];
+}
+
 export interface InvestmentCms {
 	badge: string;
 	title: string;
@@ -108,6 +122,7 @@ export interface LandingCmsData {
 	flow: FlowCms;
 	transparency: TransparencyCms;
 	facilities: FacilitiesCms;
+	teams: TeamsCms;
 	investment: InvestmentCms;
 	faq: FaqCms;
 	footer: FooterCms;
@@ -231,6 +246,35 @@ export const DEFAULT_CMS: LandingCmsData = {
 					'Dilengkapi area bermain Montessori dan sofa keluarga yang nyaman untuk diskusi santai 1-on-1 bersama psikolog anak dan tim terapis.',
 				footerLabel: 'Privasi Terjamin & Suasana Tenang',
 				imageUrl: '/assets/images/fasilitas-ruang-observasi.png'
+			}
+		]
+	},
+	teams: {
+		badge: 'OUR TEAMS',
+		title: 'Our Teams — Tim Psikolog & Terapis Kami',
+		subtitle:
+			'Ditangani oleh psikolog klinis dan terapis tersertifikasi yang hangat, berpengalaman, dan berdedikasi untuk buah hati Anda.',
+		members: [
+			{
+				name: 'dr. Sarah Novita, S.Psi., M.Psi., Psikolog',
+				role: 'Psikolog Klinis Anak (Lead Clinical Supervisor)',
+				summary:
+					'Anggota HIMPSI berpengalaman lebih dari 8 tahun dalam asesmen tumbuh kembang anak, Denver II, M-CHAT-R/F, dan penyusunan roadmap terapi personal.',
+				photoUrl: '/assets/images/team-1.svg'
+			},
+			{
+				name: 'Kak Nadia Pratiwi, S.Tr.Kes.',
+				role: 'Terapis Wicara (Speech Therapist — STR Kemenkes)',
+				summary:
+					'Fokus menangani keterlambatan bicara (speech delay), artikulasi fonem, komunikasi sosial dua arah, dan stimulasi oral-motor anak.',
+				photoUrl: '/assets/images/team-2.svg'
+			},
+			{
+				name: 'Kak Budi Santoso, S.Tr.OT.',
+				role: 'Terapis Okupasi & Perilaku ABA (STR Kemenkes)',
+				summary:
+					'Berpengalaman dalam regulasi sensori integrasi, penguatan motorik halus, manajemen tantrum, dan kemandirian aktivitas harian (ADL).',
+				photoUrl: '/assets/images/team-3.svg'
 			}
 		]
 	},

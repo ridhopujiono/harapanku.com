@@ -10,6 +10,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		flow: cms.flow,
 		transparency: cms.transparency,
 		facilities: cms.facilities,
+		teams: cms.teams,
 		faq: cms.faq
 	};
 };
@@ -118,6 +119,38 @@ export const actions: Actions = {
 			return { successSection: 'faq' };
 		} catch {
 			return fail(400, { error: 'Gagal menyimpan Bantuan & Informasi (FAQ).' });
+		}
+	},
+
+	saveTeams: async ({ request }) => {
+		const fd = await request.formData();
+		const badge = String(fd.get('badge') ?? '').trim();
+		const title = String(fd.get('title') ?? '').trim();
+		const subtitle = String(fd.get('subtitle') ?? '').trim();
+		const membersJson = String(fd.get('membersJson') ?? '[]');
+
+		try {
+			const members = JSON.parse(membersJson) as Array<{
+				name: string;
+				role: string;
+				summary: string;
+				photoUrl: string;
+			}>;
+
+			for (let i = 0; i < members.length; i++) {
+				const file = fd.get(`teamFile_${i}`);
+				if (file instanceof File && file.size > 0) {
+					const uploaded = await saveUploadedImage(file);
+					if (uploaded) members[i].photoUrl = uploaded;
+				}
+			}
+
+			await saveCmsSection('teams', { badge, title, subtitle, members });
+			return { successSection: 'teams' };
+		} catch (err) {
+			return fail(400, {
+				error: err instanceof Error ? err.message : 'Gagal menyimpan Our Teams.'
+			});
 		}
 	}
 };
