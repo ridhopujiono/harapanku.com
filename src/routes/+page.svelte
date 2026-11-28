@@ -11,6 +11,13 @@
 	let selectedServiceId = $state<number | null>(null);
 	let selectedPackageId = $state<number | null>(null);
 	let isSubmitting = $state(false);
+	let teamScroller = $state<HTMLDivElement | null>(null);
+
+	function scrollTeams(dir: 'prev' | 'next') {
+		if (!teamScroller) return;
+		const distance = dir === 'next' ? 380 : -380;
+		teamScroller.scrollBy({ left: distance, behavior: 'smooth' });
+	}
 
 	// Demo Parent Dashboard state
 	let activeTab = $state<'radar' | 'session' | 'goals'>('radar');
@@ -355,25 +362,49 @@
 	</section>
 
 	<!-- ========================================================================= -->
-	<!-- 3B. OUR TEAMS                                                             -->
+	<!-- 3B. OUR TEAMS (HORIZONTAL SCROLL)                                         -->
 	<!-- ========================================================================= -->
 	<section class="w-full border-t border-slate-100 bg-white py-16 sm:py-20" id="tim-kami">
 		<div class="mx-auto max-w-[1240px] px-5 sm:px-8">
-			<div class="mx-auto mb-14 max-w-2xl text-center">
-				<span class="mb-3 inline-block rounded-full bg-brand-blue-light px-3.5 py-1 font-subheading text-xs font-extrabold tracking-wider text-brand-blue uppercase">
-					{data.cms.teams.badge}
-				</span>
-				<h2 class="mb-3 font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
-					{data.cms.teams.title}
-				</h2>
-				<p class="font-body text-sm leading-relaxed text-slate-600 sm:text-base">
-					{data.cms.teams.subtitle}
-				</p>
+			<div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+				<div class="max-w-2xl">
+					<span class="mb-3 inline-block rounded-full bg-brand-blue-light px-3.5 py-1 font-subheading text-xs font-extrabold tracking-wider text-brand-blue uppercase">
+						{data.cms.teams.badge}
+					</span>
+					<h2 class="mb-2 font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+						{data.cms.teams.title}
+					</h2>
+					<p class="font-body text-sm leading-relaxed text-slate-600 sm:text-base">
+						{data.cms.teams.subtitle}
+					</p>
+				</div>
+
+				<div class="flex items-center gap-2 self-start md:self-auto">
+					<button
+						type="button"
+						onclick={() => scrollTeams('prev')}
+						aria-label="Geser tim ke kiri"
+						class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-brand-blue hover:text-brand-blue"
+					>
+						<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+					</button>
+					<button
+						type="button"
+						onclick={() => scrollTeams('next')}
+						aria-label="Geser tim ke kanan"
+						class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-xs transition hover:border-brand-blue hover:text-brand-blue"
+					>
+						<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+					</button>
+				</div>
 			</div>
 
-			<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+			<div
+				bind:this={teamScroller}
+				class="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-4"
+			>
 				{#each data.cms.teams.members as member}
-					<div class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-[#f8fafc] shadow-clinical transition-all hover:-translate-y-1 hover:bg-white hover:shadow-clinical-hover">
+					<div class="group flex w-[84%] flex-none snap-start flex-col overflow-hidden rounded-3xl border border-slate-100 bg-[#f8fafc] shadow-clinical transition-all hover:-translate-y-1 hover:bg-white hover:shadow-clinical-hover sm:w-[340px] lg:w-[368px]">
 						<div class="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
 							<img
 								src={member.photoUrl}
