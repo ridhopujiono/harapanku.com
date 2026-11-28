@@ -61,8 +61,10 @@ export const children = mysqlTable('children', {
 export const screeningQuestions = mysqlTable('screening_questions', {
 	id: int('id', { unsigned: true }).autoincrement().primaryKey(),
 	code: varchar('code', { length: 30 }).notNull().unique(),
-	sourceStandard: varchar('source_standard', { length: 30 }).notNull(),
+	sourceStandard: varchar('source_standard', { length: 50 }).notNull(),
 	pillar: mysqlEnum('pillar', ['wicara', 'okupasi', 'perilaku']).notNull(),
+	ageGroupMonths: smallint('age_group_months', { unsigned: true }),
+	aspect: varchar('aspect', { length: 40 }),
 	minAgeMonths: smallint('min_age_months', { unsigned: true }).notNull().default(0),
 	maxAgeMonths: smallint('max_age_months', { unsigned: true }).notNull().default(144),
 	questionTemplate: text('question_template').notNull(),
@@ -96,6 +98,8 @@ export const screeningAnswers = mysqlTable('screening_answers', {
 	screeningId: char('screening_id', { length: 36 }).notNull(),
 	questionId: int('question_id', { unsigned: true }).notNull(),
 	answerStatus: mysqlEnum('answer_status', ['optimal', 'stimulasi', 'perlu_pantauan']).notNull(),
+	answerChoice: mysqlEnum('answer_choice', ['ya', 'tidak', 'belum_dinilai']),
+	notes: text('notes'),
 	usedMiniGame: boolean('used_mini_game').notNull().default(false),
 	answeredAt: datetime('answered_at').notNull()
 });

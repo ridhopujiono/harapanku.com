@@ -53,7 +53,6 @@ jobs:
             set -e
             cd /opt/harapanku
             git pull origin main
-            docker ps -aq --filter "name=harapanku-app" | xargs -r docker rm -f
-            docker compose up -d --build --remove-orphans
+            docker compose up -d --build
             docker image prune -f
           '

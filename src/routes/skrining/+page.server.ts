@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import crypto from 'node:crypto';
-import { asc, eq } from 'drizzle-orm';
+import { and, asc, eq, isNotNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import {
 	children,
@@ -9,13 +9,19 @@ import {
 	screeningQuestions,
 	screenings
 } from '$lib/server/schema';
-import { DEFAULT_QUESTIONS, type QuestionItem } from '$lib/data/defaults';
+import {
+	AGE_GROUP_LABELS,
+	ASPECT_META,
+	MILESTONE_QUESTIONS,
+	type MilestoneAspect,
+	type MilestoneChoice,
+	type MilestoneQuestion
+} from '$lib/data/milestone-screening';
 import {
 	calculateDenverAges,
-	computePillarScores,
 	generate14DayRoadmap,
-	type AnswerStatus,
-	type PillarType
+	summarizeMilestoneAspects,
+	type AnswerStatus
 } from '$lib/utils/screening';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -24,28 +30,32 @@ export const load: PageServerLoad = async () => {
 		const rows = await db
 			.select()
 			.from(screeningQuestions)
-			.where(eq(screeningQuestions.isActive, true))
+			.where(and(eq(screeningQuestions.isActive, true), isNotNull(screeningQuestions.ageGroupMonths)))
 			.orderBy(asc(screeningQuestions.sortOrder));
 
-		const questions: QuestionItem[] =
-			rows.length > 0
-				? rows.map((q) => ({
-						id: q.id,
-						code: q.code,
-						sourceStandard: q.sourceStandard,
-						pillar: q.pillar,
-						questionTemplate: q.questionTemplate,
-						homeExample: q.homeExample,
-						miniGameTitle: q.miniGameTitle,
-						miniGameSteps: q.miniGameSteps as QuestionItem['miniGameSteps'],
-						isCriticalIndicator: q.isCriticalIndicator,
-						sortOrder: q.sortOrder
-					}))
-				: DEFAULT_QUESTIONS;
+		const questions: MilestoneQuestion[] =
+			rows.length >= 132
+				? rows.map((q) => {
+						const aspect = (q.aspect ?? 'motorik_kasar') as MilestoneAspect;
+						const ageGroup = q.ageGroupMonths ?? 12;
+						return {
+							id: q.id,
+							code: q.code,
+							ageGroupMonths: ageGroup,
+							ageGroupLabel: AGE_GROUP_LABELS[ageGroup] ?? `${ageGroup} bulan`,
+							aspect,
+							aspectLabel: ASPECT_META[aspect]?.label ?? aspect,
+							questionNumber: ((q.sortOrder - 1) % 3) + 1,
+							questionText: q.questionTemplate,
+							verificationGuide: q.homeExample,
+							pillar: q.pillar
+						};
+					})
+				: MILESTONE_QUESTIONS;
 
 		return { questions };
 	} catch {
-		return { questions: DEFAULT_QUESTIONS };
+		return { questions: MILESTONE_QUESTIONS };
 	}
 };
 
@@ -63,13 +73,15 @@ export const actions: Actions = {
 			birthDate: string;
 			isPremature: boolean;
 			gestationalWeeks: number;
-			primaryConcerns: string[];
+			selectedAgeGroup: number;
+			hasRegressionOrConcern: boolean;
+			parentConcernNotes: string;
 			answers: Array<{
 				questionId: number;
-				pillar: PillarType;
-				status: AnswerStatus;
-				isCritical: boolean;
-				usedMiniGame: boolean;
+				aspect: MilestoneAspect;
+				pillar: 'wicara' | 'okupasi' | 'perilaku';
+				choice: MilestoneChoice;
+				notes: string;
 			}>;
 		};
 
@@ -84,7 +96,10 @@ export const actions: Actions = {
 			parsed.isPremature,
 			parsed.gestationalWeeks
 		);
-		const scores = computePillarScores(parsed.answers);
+		const aspectSummary = summarizeMilestoneAspects(
+			parsed.answers.map((a) => ({ aspect: a.aspect, choice: a.choice })),
+			parsed.hasRegressionOrConcern
+		);
 		const roadmap = generate14DayRoadmap(parsed.nickname);
 
 		const childId = crypto.randomUUID();
@@ -102,6 +117,9 @@ export const actions: Actions = {
 			completedAt: null
 		}));
 
+		const choiceToStatus = (c: MilestoneChoice): AnswerStatus =>
+			c === 'ya' ? 'optimal' : c === 'belum_dinilai' ? 'stimulasi' : 'perlu_pantauan';
+
 		try {
 			await db.insert(children).values({
 				id: childId,
@@ -117,14 +135,15 @@ export const actions: Actions = {
 				id: screeningId,
 				childId,
 				guestSessionToken: locals.guestToken,
-				primaryConcerns: parsed.primaryConcerns,
+				primaryConcerns: {
+					ageGroupMonths: parsed.selectedAgeGroup,
+					hasRegressionOrConcern: parsed.hasRegressionOrConcern,
+					parentConcernNotes: parsed.parentConcernNotes
+				},
 				chronologicalAgeMonths: ageInfo.chronologicalMonths.toFixed(2),
 				correctedAgeMonths: ageInfo.correctedMonths.toFixed(2),
-				scoreWicaraPct: scores.scoreWicara,
-				scoreOkupasiPct: scores.scoreOkupasi,
-				scorePerilakuPct: scores.scorePerilaku,
-				riskLevel: scores.riskLevel,
-				clinicalSummary: scores.clinicalSummary,
+				riskLevel: aspectSummary.needsFollowUp ? 'stimulasi' : 'optimal',
+				clinicalSummary: aspectSummary.followUpSummary,
 				completedAt: now,
 				createdAt: now
 			});
@@ -135,8 +154,10 @@ export const actions: Actions = {
 						id: crypto.randomUUID(),
 						screeningId,
 						questionId: a.questionId,
-						answerStatus: a.status,
-						usedMiniGame: a.usedMiniGame,
+						answerStatus: choiceToStatus(a.choice),
+						answerChoice: a.choice,
+						notes: a.notes || null,
+						usedMiniGame: false,
 						answeredAt: now
 					}))
 				);
@@ -144,7 +165,7 @@ export const actions: Actions = {
 
 			await db.insert(dailyStimulationLogs).values(logRows);
 		} catch (err) {
-			console.warn('[TumbuhKembang] DB offline saat menyimpan skrining, tampilkan hasil lokal:', err);
+			console.warn('[TumbuhKembang] DB error/offline saat menyimpan skrining:', err);
 		}
 
 		return {
@@ -154,9 +175,13 @@ export const actions: Actions = {
 				nickname: parsed.nickname,
 				isPremature: parsed.isPremature,
 				gestationalWeeks: parsed.gestationalWeeks,
+				ageGroupLabel: AGE_GROUP_LABELS[parsed.selectedAgeGroup] ?? `${parsed.selectedAgeGroup} bulan`,
+				hasRegressionOrConcern: parsed.hasRegressionOrConcern,
+				parentConcernNotes: parsed.parentConcernNotes,
 				ageInfo,
-				scores,
-				roadmap: logRows
+				aspectSummary,
+				roadmap: logRows,
+				answersDetail: parsed.answers
 			}
 		};
 	},

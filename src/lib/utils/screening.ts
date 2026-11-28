@@ -1,5 +1,63 @@
+import {
+	ASPECT_META,
+	type MilestoneAspect,
+	type MilestoneChoice
+} from '$lib/data/milestone-screening';
+
 export type AnswerStatus = 'optimal' | 'stimulasi' | 'perlu_pantauan';
 export type PillarType = 'wicara' | 'okupasi' | 'perilaku';
+
+export interface AspectSummary {
+	aspect: MilestoneAspect;
+	label: string;
+	yaCount: number;
+	tidakCount: number;
+	belumDinilaiCount: number;
+	total: number;
+}
+
+export function summarizeMilestoneAspects(
+	answers: Array<{ aspect: MilestoneAspect; choice: MilestoneChoice }>,
+	hasRegressionOrConcern: boolean
+) {
+	const aspectOrder: MilestoneAspect[] = [
+		'motorik_kasar',
+		'motorik_halus',
+		'bahasa_komunikasi',
+		'sosialisasi_kemandirian'
+	];
+
+	const summaries: AspectSummary[] = aspectOrder.map((aspect) => {
+		const subset = answers.filter((a) => a.aspect === aspect);
+		return {
+			aspect,
+			label: ASPECT_META[aspect].label,
+			yaCount: subset.filter((a) => a.choice === 'ya').length,
+			tidakCount: subset.filter((a) => a.choice === 'tidak').length,
+			belumDinilaiCount: subset.filter((a) => a.choice === 'belum_dinilai').length,
+			total: subset.length
+		};
+	});
+
+	const totalYa = summaries.reduce((acc, s) => acc + s.yaCount, 0);
+	const totalTidak = summaries.reduce((acc, s) => acc + s.tidakCount, 0);
+	const totalBelumDinilai = summaries.reduce((acc, s) => acc + s.belumDinilaiCount, 0);
+
+	const needsFollowUp = totalTidak > 0 || totalBelumDinilai > 0 || hasRegressionOrConcern;
+
+	const followUpSummary = needsFollowUp
+		? 'Terdapat beberapa kemampuan yang belum tampak, belum dinilai, atau menjadi perhatian orang tua. Disarankan melanjutkan observasi langsung melalui permainan di rumah dan berkonsultasi dengan tenaga kesehatan atau Psikolog Klinis Anak untuk penilaian lanjutan.'
+		: 'Seluruh milestone pemantauan awal pada kelompok usia ini sudah tampak. Teruskan stimulasi bermain bebas layar di rumah dan lakukan pemantauan ulang secara berkala pada kelompok usia berikutnya.';
+
+	return {
+		summaries,
+		totalYa,
+		totalTidak,
+		totalBelumDinilai,
+		needsFollowUp,
+		followUpSummary
+	};
+}
 
 export interface AgeCalculation {
 	chronologicalMonths: number;
