@@ -100,11 +100,11 @@
 		</a>
 
 		<nav class="hidden items-center gap-7 font-subheading text-sm font-semibold text-slate-600 lg:flex">
+			<a href="#tim-kami" class="py-2 transition-colors hover:text-brand-blue">Our Teams</a>
 			<a href="#layanan" class="py-2 transition-colors hover:text-brand-blue">Layanan Terapi</a>
 			<a href="#alur" class="py-2 transition-colors hover:text-brand-blue">Alur Konsultasi</a>
 			<a href="#dashboard" class="py-2 transition-colors hover:text-brand-blue">Parent Dashboard</a>
 			<a href="#fasilitas" class="py-2 transition-colors hover:text-brand-blue">Fasilitas</a>
-			<a href="#tim-kami" class="py-2 transition-colors hover:text-brand-blue">Our Teams</a>
 			<a href="#paket-asesmen" class="py-2 transition-colors hover:text-brand-blue">Paket Asesmen</a>
 			<a href="#faq" class="py-2 transition-colors hover:text-brand-blue">FAQ</a>
 			<a
@@ -171,11 +171,11 @@
 					</button>
 				</div>
 				<nav class="mt-6 flex flex-col gap-4 font-subheading font-semibold text-slate-700">
+					<a href="#tim-kami" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Our Teams</a>
 					<a href="#layanan" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Layanan Terapi</a>
 					<a href="#alur" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Alur Konsultasi</a>
 					<a href="#dashboard" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Parent Dashboard</a>
 					<a href="#fasilitas" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Fasilitas Klinik</a>
-					<a href="#tim-kami" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Our Teams</a>
 					<a href="#paket-asesmen" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Paket Asesmen &amp; Biaya</a>
 					<a href="#faq" onclick={() => (mobileMenuOpen = false)} class="py-1 hover:text-brand-blue">Tanya Jawab (FAQ)</a>
 					<a
@@ -348,6 +348,48 @@
 						<p class="font-body text-sm leading-relaxed text-slate-600">
 							{adv.description}
 						</p>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</section>
+
+	<!-- ========================================================================= -->
+	<!-- 3B. OUR TEAMS                                                             -->
+	<!-- ========================================================================= -->
+	<section class="w-full border-t border-slate-100 bg-white py-16 sm:py-20" id="tim-kami">
+		<div class="mx-auto max-w-[1240px] px-5 sm:px-8">
+			<div class="mx-auto mb-14 max-w-2xl text-center">
+				<span class="mb-3 inline-block rounded-full bg-brand-blue-light px-3.5 py-1 font-subheading text-xs font-extrabold tracking-wider text-brand-blue uppercase">
+					{data.cms.teams.badge}
+				</span>
+				<h2 class="mb-3 font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+					{data.cms.teams.title}
+				</h2>
+				<p class="font-body text-sm leading-relaxed text-slate-600 sm:text-base">
+					{data.cms.teams.subtitle}
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+				{#each data.cms.teams.members as member}
+					<div class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-[#f8fafc] shadow-clinical transition-all hover:-translate-y-1 hover:bg-white hover:shadow-clinical-hover">
+						<div class="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+							<img
+								src={member.photoUrl}
+								alt={member.name}
+								class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+							/>
+						</div>
+						<div class="flex flex-grow flex-col p-6 sm:p-7">
+							<span class="mb-2 inline-block self-start rounded-full bg-brand-blue-light px-3 py-1 font-subheading text-xs font-bold text-brand-blue">
+								{member.role}
+							</span>
+							<h3 class="mb-2 font-heading text-lg font-bold text-slate-900">{member.name}</h3>
+							<p class="font-body text-sm leading-relaxed text-slate-600">
+								{member.summary}
+							</p>
+						</div>
 					</div>
 				{/each}
 			</div>
@@ -767,48 +809,6 @@
 								<span class="material-symbols-outlined text-[16px]">verified</span>
 								<span>{fac.footerLabel}</span>
 							</div>
-						</div>
-					</div>
-				{/each}
-			</div>
-		</div>
-	</section>
-
-	<!-- ========================================================================= -->
-	<!-- 7B. OUR TEAMS                                                             -->
-	<!-- ========================================================================= -->
-	<section class="w-full border-t border-slate-100 bg-white py-16 sm:py-20" id="tim-kami">
-		<div class="mx-auto max-w-[1240px] px-5 sm:px-8">
-			<div class="mx-auto mb-14 max-w-2xl text-center">
-				<span class="mb-3 inline-block rounded-full bg-brand-blue-light px-3.5 py-1 font-subheading text-xs font-extrabold tracking-wider text-brand-blue uppercase">
-					{data.cms.teams.badge}
-				</span>
-				<h2 class="mb-3 font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
-					{data.cms.teams.title}
-				</h2>
-				<p class="font-body text-sm leading-relaxed text-slate-600 sm:text-base">
-					{data.cms.teams.subtitle}
-				</p>
-			</div>
-
-			<div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-				{#each data.cms.teams.members as member}
-					<div class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-[#f8fafc] shadow-clinical transition-all hover:-translate-y-1 hover:bg-white hover:shadow-clinical-hover">
-						<div class="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-							<img
-								src={member.photoUrl}
-								alt={member.name}
-								class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-							/>
-						</div>
-						<div class="flex flex-grow flex-col p-6 sm:p-7">
-							<span class="mb-2 inline-block self-start rounded-full bg-brand-blue-light px-3 py-1 font-subheading text-xs font-bold text-brand-blue">
-								{member.role}
-							</span>
-							<h3 class="mb-2 font-heading text-lg font-bold text-slate-900">{member.name}</h3>
-							<p class="font-body text-sm leading-relaxed text-slate-600">
-								{member.summary}
-							</p>
 						</div>
 					</div>
 				{/each}
